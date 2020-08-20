@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -30,10 +31,14 @@ namespace CoreBackend
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //registers our DBContext via dependency injection
+            services.AddDbContext<ProductDBContext>(options =>
+        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
             //add proper support for our JSON formated data
             services.AddControllers().AddNewtonsoftJson();
-            //Dependency Inject our product servce
-            services.AddSingleton<IProductsService, ProductsService>();
+            //Dependency Inject our product service
+            services.AddScoped<IProductsService, ProductsService>();
 
             //add support for CORS 
             services.AddCors(o => o.AddPolicy("corsPolicy", builder =>

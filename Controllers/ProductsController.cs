@@ -30,23 +30,47 @@ namespace CoreBackend.Controllers
         }
 
         [HttpPost("/api/products")]
-        public ActionResult<List<Product>> AddProduct(List<Product> products)
+        public ActionResult AddProduct(List<Product> products)
         {
-            return _service.AddProduct(products);
+            var retVal = _service.AddProduct(products);
+
+            if (retVal.Result > 0)
+            {
+                return Ok(retVal.Result);
+            }
+            else
+            {
+                return BadRequest("Not able to save data");
+            }
+
         }
 
         [HttpPut("/api/products/{id}")]
-        public ActionResult<Product> UpdateProduct(int id, Product product)
+        public ActionResult<int> UpdateProduct(int id, Product product)
         {
-           var updated = _service.UpdateProduct(id, product);
-            return updated;
+           var retVal = _service.UpdateProduct(id, product);
+            if (retVal.Result > 0)
+            {
+                return Ok(retVal.Result);
+            }
+            else
+            {
+                return BadRequest("Not able to update data");
+            }
         }
 
         [HttpDelete("/api/products/{id}")]
         public ActionResult<int> DeleteProduct(int id)
         {
-            var idx = _service.DeleteProduct(id);
-            return idx;
+            var retVal = _service.DeleteProduct(id);
+            if (retVal.Result > 0)
+            {
+                return Ok(retVal.Result);
+            }
+            else
+            {
+                return BadRequest("Not able to delete data");
+            }
         }
     }
 }
