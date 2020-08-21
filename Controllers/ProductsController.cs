@@ -14,12 +14,10 @@ namespace CoreBackend.Controllers
     [Route("[controller]")]
     public class ProductsController : Controller
     {
-        private ILogger _logger;
         private IProductsService _service;
 
-        public ProductsController(ILogger<ProductsController> logger, IProductsService service)
+        public ProductsController(IProductsService service)
         {
-            _logger = logger;
             _service = service;
 
         }
