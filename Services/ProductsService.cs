@@ -1,5 +1,6 @@
 ﻿using CoreBackend.Model;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Logging;
 using System;
@@ -33,7 +34,7 @@ namespace CoreBackend.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex.InnerException.Message);
-                return 0;
+                throw;
             }
         }
 
@@ -50,14 +51,23 @@ namespace CoreBackend.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex.InnerException.Message);
-                return 0;
+                throw;
             }
         }
 
-        List<Product> IProductsService.GetProducts()
+       async Task<List<Product>> IProductsService.GetProducts()
         {
-            //return all products list from database
-            return _dbctx.Products.ToList();
+            try
+            {
+                //return all products list from database
+                var results = await _dbctx.Products.ToListAsync();
+                return results;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.InnerException.Message);
+                throw;
+            }
         }
 
         async Task<int> IProductsService.UpdateProduct(int id, Product productItem)
@@ -73,7 +83,7 @@ namespace CoreBackend.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex.InnerException.Message);
-                return 0;
+                throw;
             }
         }
     }

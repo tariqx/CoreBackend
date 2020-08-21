@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using CoreBackend.Model;
 using Microsoft.AspNetCore.Http;
@@ -24,52 +25,81 @@ namespace CoreBackend.Controllers
         }
 
         [HttpGet("/api/products")]
-        public ActionResult<List<Product>> GetProducts()
+        public async Task<ActionResult<List<Product>>> GetProducts()
         {
-            return _service.GetProducts();
+            try
+            {
+                var results = await _service.GetProducts();
+                return Ok(results);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost("/api/products")]
-        public ActionResult AddProduct(List<Product> products)
+        public async Task<ActionResult> AddProduct(List<Product> products)
         {
-            var retVal = _service.AddProduct(products);
+            try
+            {
+                var retVal = await _service.AddProduct(products);
 
-            if (retVal.Result > 0)
-            {
-                return Ok(retVal.Result);
+                if (retVal > 0)
+                {
+                    return Ok(retVal);
+                }
+                else
+                {
+                    return BadRequest("Not able to save data");
+                }
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest("Not able to save data");
+                return BadRequest(ex.Message);
             }
 
         }
 
         [HttpPut("/api/products/{id}")]
-        public ActionResult<int> UpdateProduct(int id, Product product)
+        public async Task<ActionResult<int>> UpdateProduct(int id, Product product)
         {
-           var retVal = _service.UpdateProduct(id, product);
-            if (retVal.Result > 0)
+            try
             {
-                return Ok(retVal.Result);
+                var retVal = await _service.UpdateProduct(id, product);
+                if (retVal > 0)
+                {
+                    return Ok(retVal);
+                }
+                else
+                {
+                    return BadRequest("Not able to update data");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return BadRequest("Not able to update data");
+                return BadRequest(ex.Message);
             }
         }
 
         [HttpDelete("/api/products/{id}")]
-        public ActionResult<int> DeleteProduct(int id)
+        public async Task<ActionResult<int>> DeleteProduct(int id)
         {
-            var retVal = _service.DeleteProduct(id);
-            if (retVal.Result > 0)
+            try
             {
-                return Ok(retVal.Result);
+                var retVal = await _service.DeleteProduct(id);
+                if (retVal > 0)
+                {
+                    return Ok(retVal);
+                }
+                else
+                {
+                    return BadRequest("Not able to delete data");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return BadRequest("Not able to delete data");
+                return BadRequest(ex.Message);
             }
         }
     }

@@ -7,7 +7,7 @@ namespace CoreBackend.Model
 {
     public interface IProductsService
     {
-        public List<Product> GetProducts();
+        public Task<List<Product>> GetProducts();
         public Task<int> AddProduct(List<Product> productItem);
         public Task<int> UpdateProduct(int id, Product productItem);
         public Task<int> DeleteProduct(int id);
